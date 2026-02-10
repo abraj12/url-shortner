@@ -228,8 +228,8 @@ footer{
 
   <% if (locals.id) { %>
   <div class="result">
-    <a id="shortUrl" href="http://localhost:8001/url/<%= id %>" target="_blank">
-      http://localhost:8001/url/<%= id %>
+    <a id="shortUrl" href="<%= baseUrl %>/url/<%= id %>" target="_blank">
+      <%= baseUrl %>/url/<%= id %>
     </a>
     <button class="copy" onclick="copy()">Copy</button>
   </div>
