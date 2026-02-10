@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shortly | Smart URL Shortener</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#0f1020;color:#fff}
+
+/* NAVBAR */
+nav{
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 70px;
+  background:rgba(15,16,32,.85);
+  backdrop-filter:blur(10px);
+}
+nav h2{font-weight:700;letter-spacing:1px}
+nav a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:30px;
+  font-size:14px;
+  opacity:.85;
+}
+nav a:hover{opacity:1}
+
+/* HERO */
+.hero{
+  min-height:85vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:40px 20px;
+  background:
+    radial-gradient(circle at top, #667eea, transparent 60%),
+    radial-gradient(circle at bottom, #764ba2, transparent 60%);
+}
+.hero h1{
+  font-size:56px;
+  line-height:1.1;
+  margin-bottom:20px;
+}
+.hero span{color:#7f9cff}
+.hero p{
+  max-width:650px;
+  margin:auto;
+  opacity:.9;
+  font-size:17px;
+}
+.hero .btns{
+  margin-top:35px;
+}
+.hero button{
+  padding:14px 28px;
+  border-radius:30px;
+  border:none;
+  margin:10px;
+  font-size:15px;
+  cursor:pointer;
+}
+.primary{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+}
+.secondary{
+  background:transparent;
+  border:1px solid #667eea;
+  color:#fff;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+  padding:60px 80px;
+}
+.stat{
+  background:#16182f;
+  border-radius:18px;
+  padding:30px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+  transition:.4s;
+}
+.stat:hover{transform:translateY(-10px)}
+.stat h2{font-size:42px;color:#7f9cff}
+.stat p{opacity:.8}
+
+/* SHORTENER */
+.shortener{
+  max-width:900px;
+  margin:40px auto;
+  padding:50px;
+  background:#16182f;
+  border-radius:22px;
+  box-shadow:0 30px 60px rgba(0,0,0,.5);
+}
+.shortener h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+.shortener input{
+  width:100%;
+  padding:16px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:15px;
+  font-size:15px;
+}
+.shortener button{
+  width:100%;
+  padding:16px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* RESULT */
+.result{
+  background:#0f1020;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  animation:drop .5s ease;
+}
+.result a{color:#7f9cff;font-weight:600}
+.copy{background:#667eea;border:none;padding:8px 14px;border-radius:8px;color:#fff}
+
+/* FEATURES */
+.features{
+  padding:80px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:30px;
+}
+.feature{
+  background:#16182f;
+  padding:35px;
+  border-radius:20px;
+  text-align:center;
+  transition:.4s;
+}
+.feature:hover{
+  transform:translateY(-12px) scale(1.03);
+  box-shadow:0 30px 60px rgba(102,126,234,.4);
+}
+.feature h3{color:#7f9cff;margin-bottom:10px}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:30px;
+  opacity:.7;
+}
+
+@keyframes drop{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1}
+}
+
+@media(max-width:768px){
+  nav{padding:18px 25px}
+  .hero h1{font-size:36px}
+  .stats,.features{padding:40px 20px}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2>Shortly</h2>
+  <div>
+    <a href="/url">Home</a>
+    <a href="/url/all">Analytics</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <h1>Shorten Links.<br><span>Track Clicks.</span><br>Grow Faster.</h1>
+    <p>A powerful URL shortener with real-time analytics built using Node.js & MongoDB.</p>
+    <div class="btns">
+      <button class="primary" onclick="document.getElementById('shortener').scrollIntoView({behavior:'smooth'})">
+        Get Started
+      </button>
+      <button class="secondary" onclick="location.href='/url/all'">
+        View Analytics
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat">
+    <h2>⚡ Fast</h2>
+    <p>Instant URL generation</p>
+  </div>
+  <div class="stat">
+    <h2>🔒 Secure</h2>
+    <p>Safe redirections</p>
+  </div>
+  <div class="stat">
+    <h2>📊 Track</h2>
+    <p>Click analytics</p>
+  </div>
+</section>
+
+<section id="shortener" class="shortener">
+  <h2>Shorten Your URL</h2>
+
+  <% if (locals.id) { %>
+  <div class="result">
+    <a id="shortUrl" href="http://localhost:8001/url/<%= id %>" target="_blank">
+      http://localhost:8001/url/<%= id %>
+    </a>
+    <button class="copy" onclick="copy()">Copy</button>
+  </div>
+  <% } %>
+
+  <form method="post" action="/url">
+    <input type="text" name="url" placeholder="https://example.com" required />
+    <button type="submit">Generate Short URL</button>
+  </form>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <h3>Smart Short URLs</h3>
+    <p>Clean & readable short links.</p>
+  </div>
+  <div class="feature">
+    <h3>Analytics Dashboard</h3>
+    <p>Monitor clicks & performance.</p>
+  </div>
+  <div class="feature">
+    <h3>Scalable Backend</h3>
+    <p>Built with Express & MongoDB.</p>
+  </div>
+</section>
+
+<footer>
+  © 2026 Shortly • Built with ❤️ by You
+</footer>
+
+<script>
+function copy(){
+  navigator.clipboard.writeText(
+    document.getElementById("shortUrl").innerText
+  );
+  alert("Copied!");
+}
+</script>
+
+</body>
+</html>

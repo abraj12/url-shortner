@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analytics | Shortly</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#0f1020;color:#fff}
+
+/* NAVBAR */
+nav{
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 70px;
+  background:rgba(15,16,32,.85);
+  backdrop-filter:blur(10px);
+}
+nav a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:30px;
+  font-size:14px;
+  opacity:.85;
+}
+nav a:hover{opacity:1}
+
+/* CONTAINER */
+.container{
+  max-width:1200px;
+  margin:40px auto;
+  padding:0 20px;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:25px;
+  margin-bottom:35px;
+}
+.stat{
+  background:#16182f;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+  transition:.4s;
+}
+.stat:hover{transform:translateY(-10px)}
+.stat h2{font-size:40px;color:#7f9cff}
+.stat p{opacity:.8}
+
+/* SEARCH */
+.search-box{
+  margin-bottom:25px;
+}
+.search-box input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  font-size:15px;
+}
+
+/* TABLE */
+.table-box{
+  background:#16182f;
+  padding:25px;
+  border-radius:22px;
+  box-shadow:0 30px 60px rgba(0,0,0,.5);
+  overflow-x:auto;
+}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px;font-size:14px;text-align:left}
+th{color:#7f9cff}
+tr{border-bottom:1px solid rgba(255,255,255,.08)}
+tr:hover{background:#1f2240}
+
+/* BADGES */
+.badge{
+  background:#667eea;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+/* PROGRESS */
+.progress{
+  height:8px;
+  background:#0f1020;
+  border-radius:10px;
+  overflow:hidden;
+}
+.progress div{
+  height:100%;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+/* BUTTON */
+.copy{
+  background:#667eea;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  color:#fff;
+  font-size:12px;
+  cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:30px;
+  opacity:.6;
+}
+
+@media(max-width:768px){
+  nav{padding:18px 25px}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2>Analytics</h2>
+  <div>
+    <a href="/url">Home</a>
+    <a href="/url/all">Analytics</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <h2><%= urls.length %></h2>
+      <p>Total URLs</p>
+    </div>
+    <div class="stat">
+      <h2>
+        <%= urls.reduce((a,u)=>a+u.visitHistory.length,0) %>
+      </h2>
+      <p>Total Clicks</p>
+    </div>
+    <div class="stat">
+      <h2>
+        <%= Math.max(...urls.map(u=>u.visitHistory.length),0) %>
+      </h2>
+      <p>Highest Clicks</p>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search by short id or URL...">
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-box">
+    <table id="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Short ID</th>
+          <th>Redirect URL</th>
+          <th>Clicks</th>
+          <th>Performance</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          const maxClicks = Math.max(...urls.map(u=>u.visitHistory.length),1);
+          urls.forEach((u,i)=>{ 
+        %>
+        <tr>
+          <td><%= i+1 %></td>
+          <td><%= u.shortId %></td>
+          <td>
+            <a href="<%= u.redirectURL %>" target="_blank" style="color:#7f9cff">
+              <%= u.redirectURL %>
+            </a>
+          </td>
+          <td><span class="badge"><%= u.visitHistory.length %></span></td>
+          <td>
+            <div class="progress">
+              <div style="width:<%= (u.visitHistory.length/maxClicks)*100 %>%"></div>
+            </div>
+          </td>
+          <td>
+            <button class="copy" onclick="copy('http://localhost:8001/url/<%= u.shortId %>')">
+              Copy
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Shortly • Analytics Dashboard
+</footer>
+
+<script>
+/* COPY */
+function copy(text){
+  navigator.clipboard.writeText(text);
+  alert("Copied!");
+}
+
+/* SEARCH FILTER */
+document.getElementById("search").addEventListener("keyup", function(){
+  const value = this.value.toLowerCase();
+  document.querySelectorAll("#table tbody tr").forEach(row=>{
+    row.style.display = row.innerText.toLowerCase().includes(value)
+      ? ""
+      : "none";
+  });
+});
+</script>
+
+</body>
+</html>
