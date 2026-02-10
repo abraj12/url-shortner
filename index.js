@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const { connetToMongoDB } = require("./connect");
+
 const urlRoute = require("./routes/url");
 const staticRoute = require("./routes/staticsRouter");
 const URL = require("./models/url");
@@ -10,7 +11,9 @@ const URL = require("./models/url");
 const app = express();
 const PORT = process.env.PORT || 8001;
 
-/* MongoDB */
+/* ======================
+   DATABASE CONNECTION
+====================== */
 if (!process.env.MONGO_URL) {
   console.error("❌ MONGO_URL is not defined");
 } else {
@@ -19,34 +22,65 @@ if (!process.env.MONGO_URL) {
     .catch(err => console.error("❌ MongoDB error:", err.message));
 }
 
-/* View engine */
+/* ======================
+   VIEW ENGINE
+====================== */
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
-/* Middleware */
+/* ======================
+   GLOBAL MIDDLEWARE
+====================== */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/* Root redirect */
+/* Base URL for EJS (Render + Local) */
+app.use((req, res, next) => {
+  res.locals.baseUrl = `${req.protocol}://${req.get("host")}`;
+  next();
+});
+
+/* ======================
+   ROOT REDIRECT
+====================== */
 app.get("/", (req, res) => {
   res.redirect("/url");
 });
 
-/* Routes */
-app.use("/url", urlRoute);
-app.use("/url", staticRoute);
+/* ======================
+   PAGE & API ROUTES
+====================== */
+app.use("/url", staticRoute); // home + analytics
+app.use("/url", urlRoute);    // create short URL
 
-/* Redirect short URL */
-app.get("/url/:shortId", async (req, res) => {
-  const entry = await URL.findOneAndUpdate(
-    { shortId: req.params.shortId },
-    { $push: { visitHistory: { timestamp: Date.now() } } }
-  );
+/* ======================
+   SHORT URL REDIRECT
+   (VERY IMPORTANT)
+====================== */
+app.get("/:shortId", async (req, res) => {
+  try {
+    const shortId = req.params.shortId;
 
-  if (!entry) return res.status(404).send("URL not found");
-  res.redirect(entry.redirectURL);
+    const entry = await URL.findOneAndUpdate(
+      { shortId },
+      { $push: { visitHistory: { timestamp: Date.now() } } },
+      { new: true }
+    );
+
+    if (!entry) {
+      return res.status(404).send("Short URL not found");
+    }
+
+    res.redirect(entry.redirectURL);
+  } catch (err) {
+    console.error("Redirect error:", err);
+    res.status(500).send("Server error");
+  }
 });
 
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT}`)
-);
+/* ======================
+   START SERVER
+====================== */
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
